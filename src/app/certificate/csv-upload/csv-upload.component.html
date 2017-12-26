@@ -1,0 +1,30 @@
+<div class="container">
+    <h1>CSV File Input</h1>
+    <h2>Data format in (.csv) file</h2>
+    <p> </p><li> Initials,Firstname,Middlename,lastname,institute,city,state,photo</li>
+    <li>Data for each field must be enclosed in double quotes(").</li>
+    <li>comma(,) must be used as separator.</li>
+    <li>Photos folder must be in <strong>(.zip)</strong> or <strong>(.tar.gz)</strong> format.</li><br>
+    <strong>Note:</strong><br>
+    <li>Sample file containing csv and .tar.gz files can be Downloaded <a href="sample.zip">HERE</a></li>
+    <p></p>
+</div>
+<div class="container">
+    <form class="form-horizontal"  (ngSubmit)= "onSubmit()" [formGroup]="myForm">
+        <div class="form-group row ">
+            <label class="control-label col-sm-4" for="csv">Select your (.csv) file</label>
+            <div class=" col-sm-4">
+              <input type="file" name="csv" formControlName="csv" (change)="getFiles($event)">
+            </div>
+        </div>
+        <div class="form-group row ">
+            <label class="control-label col-sm-4" for="zip">Select your (.tar.gz) or (.zip) file</label>
+            <div class=" col-sm-4">
+              <input type="file" name="zip" formControlName="zip" (change)="getZipFiles($event)">
+            </div>
+        </div>
+        <div class="col-sm-offset-2 col-sm-10">
+            <button class="btn btn-default" type="submit"> Submit</button>
+        </div>
+    </form>
+</div>

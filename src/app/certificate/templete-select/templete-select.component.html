@@ -1,0 +1,9 @@
+<div class="container">
+		<div class="imagetiles">
+			<div class="col-lg-3">
+			<a class="img-rounded" *ngFor="let url of urls;" (click)="onSelect(url.name)" >
+				<img src={{url.url}} width="350px">
+			</a>
+		</div>
+	</div>
+</div>
