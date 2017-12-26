@@ -7,6 +7,7 @@ import { RequestOptions,Http,Headers } from '@angular/http';
 import { Validators } from '@angular/forms';
 import { CertificateService } from '../certificate.service';
 import { State } from '../certificate.model';
+import { Subscription } from 'rxjs/Subscription';
 
 @Component({
   selector: 'app-manual-form',
@@ -25,12 +26,23 @@ export class ManualFormComponent implements OnInit {
 
   public myForm: FormGroup;
   state:State;
+  requestSubscription:Subscription;
   constructor( private router: Router,
-    private http:Http,
     private certiService:CertificateService,
     public ngProgress: NgProgress) {
 
     }
+
+    
+
+  destory:boolean=true;
+  ngOnDestroy() {
+    if(this.destory){
+      this.requestSubscription!==undefined?this.requestSubscription.unsubscribe():" ";
+      this.ngProgress.done();
+      this.router.navigate([''])
+    }
+  }
 
   ngOnInit() {
     this.state=this.certiService.getState()
@@ -42,8 +54,12 @@ export class ManualFormComponent implements OnInit {
     for(let i of this.Fields){
       (<FormGroup>this.myForm.get("main"))
       .addControl(i,new FormControl(null,Validators.required))
-    }
-    
+    }  
+  }
+
+  inValidElement(element:string){
+    return !this.myForm.get('main.'+element).valid && 
+    this.myForm.get('main.'+element).touched
   }
 
   onSubmit(){
@@ -56,12 +72,14 @@ export class ManualFormComponent implements OnInit {
       ...this.state.nextFields,
       'id':this.state.token
     }
+
     console.log(sendObj)
-    this.http.post(this.certiService.getUrl('final.php'), 
+    this.requestSubscription=this.certiService.getRequest('final.php', 
     JSON.stringify(sendObj)).subscribe(res => {
       this.state.output=res.json();
       this.certiService.updateState(this.state)
       this.ngProgress.done();
+      this.destory=false;
       this.router.navigate(['output'])
     });
     

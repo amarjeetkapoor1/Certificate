@@ -13,8 +13,16 @@ export class TempleteSelectComponent implements OnInit {
 
   state:State;
   urls=[]
+  
   constructor( private router: Router,private http:Http,private certiService:CertificateService) { }
 
+  destory:boolean=true;
+  ngOnDestroy() {
+    if(this.destory){
+      this.router.navigate([''])
+    }
+  }
+  
   ngOnInit() {
     this.state=this.certiService.getState()
     for (let i of this.certiService.TempleteUrls){
@@ -23,6 +31,7 @@ export class TempleteSelectComponent implements OnInit {
   }
 
   onSelect(selectedUrl: string){
+    this.destory=false
     this.state.SelectedTemplete=selectedUrl;
     this.certiService.updateState(this.state)
     this.router.navigate(['baseform'])

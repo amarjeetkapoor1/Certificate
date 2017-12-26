@@ -1,6 +1,13 @@
 import {State} from './certificate.model'
+import { Http } from '@angular/http';
+import { Injectable } from '@angular/core';
 
+@Injectable()
 export class CertificateService{
+
+    constructor(private http:Http) {
+        
+    }
 
     state:State={
         SelectedTemplete:"",
@@ -31,6 +38,10 @@ export class CertificateService{
 
     updateState(state:State){
         this.state=state;
+    }
+
+    getRequest(file:string,data:any){
+        return this.http.post(this.Url+file, data)
     }
 
     getUrl(file:string){

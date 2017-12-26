@@ -3,7 +3,6 @@ import { ViewChild } from '@angular/core';
 import { Router } from '@angular/router';
 import { FormGroup } from '@angular/forms';
 import { FormControl } from '@angular/forms';
-import { Http, RequestOptions, Headers} from '@angular/http'
 import { Validators } from '@angular/forms';
 import { CertificateService } from '../certificate.service';
 import { State } from '../certificate.model';
@@ -31,11 +30,19 @@ export class BaseFormComponent implements OnInit {
 
   public myForm: FormGroup;
   state:State
+  
   constructor( private router: Router,
-    private http:Http, 
     private certiService:CertificateService,
     public ngProgress: NgProgress) {
+  
     }
+
+  destory:boolean=true;
+  ngOnDestroy() {
+    if(this.destory){
+      this.router.navigate([''])
+    }
+  }
 
   ngOnInit() {
     this.state=this.certiService.getState();
@@ -52,6 +59,11 @@ export class BaseFormComponent implements OnInit {
     
   }
 
+  inValidElement(element:string){
+   return !this.myForm.get('main.'+element).valid && 
+   this.myForm.get('main.'+element).touched
+  }
+  
   onSubmit(){
     this.ngProgress.start();
     this.state.BaseFields={
@@ -63,12 +75,13 @@ export class BaseFormComponent implements OnInit {
       "Sel":this.state.SelectedTemplete
     }
 
-    this.http.post(this.certiService.getUrl('start.php'), 
+    this.certiService.getRequest('start.php', 
     JSON.stringify(sendObj)).subscribe(res => {
       this.state.nextMethod=this.myForm.value["nextMethod"]
       this.state.token=res.json();
       this.certiService.updateState({...this.state})
       this.ngProgress.done();
+      this.destory=false;
       this.router.navigate([this.myForm.value["nextMethod"]])
     });
 

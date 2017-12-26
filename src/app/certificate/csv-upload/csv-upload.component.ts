@@ -1,10 +1,10 @@
 import { Component, OnInit } from '@angular/core';
 import { State } from '../certificate.model';
-import { Router } from '@angular/router';
 import { FormControl, FormGroup } from '@angular/forms';
-import { Http } from '@angular/http';
 import { CertificateService } from '../certificate.service';
 import { NgProgress } from 'ngx-progressbar';
+import { Subscription } from 'rxjs/Subscription';
+import { Router } from '@angular/router';
 
 @Component({
   selector: 'app-csv-upload',
@@ -13,9 +13,9 @@ import { NgProgress } from 'ngx-progressbar';
 })
 export class CsvUploadComponent implements OnInit {
 
+  requestSubscription:Subscription;
   state:State;
-  constructor( private router: Router,
-    private http:Http, 
+  constructor( private router: Router, 
     private certiService:CertificateService,
     public ngProgress: NgProgress) {
       
@@ -23,6 +23,15 @@ export class CsvUploadComponent implements OnInit {
 
   myForm:FormGroup
 
+  destory:boolean=true;
+  ngOnDestroy() {
+    if(this.destory){
+      this.requestSubscription!==undefined?this.requestSubscription.unsubscribe():" ";
+      this.ngProgress.done()
+      this.router.navigate([''])
+    }
+  }
+  
   ngOnInit() {
     this.state=this.certiService.getState()
     this.myForm=new FormGroup({
@@ -49,12 +58,11 @@ export class CsvUploadComponent implements OnInit {
     _formData.append('file', this.csvFile, this.csvFile.name);
     _formData.append('photo', this.zipFile, this.zipFile.name);
     _formData.append('id',this.state.token);
-    this.http.post(this.certiService.getUrl('csv.php'), 
-    _formData
-    ).subscribe(res => {
+    this.requestSubscription=this.certiService.getRequest('csv.php',_formData).subscribe(res => {
       this.state.output=res.json();
       this.certiService.updateState({...this.state})
       this.ngProgress.done();
+      this.destory=false;
       this.router.navigate(['output'])
     });
   }
