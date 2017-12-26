@@ -1,5 +1,5 @@
 <?php session_start();
-
+header('Access-Control-Allow-Origin: *');
 require_once('library/odf.php');
 
   $id = uniqid();				//To be used with filenames to differentiate simultaneous files being processed 
@@ -31,9 +31,9 @@ else
 move_uploaded_file($_FILES["file"]["tmp_name"],"uploads/csv/data/".$csv);
 	} 
 
-$base = $_SESSION["base"];			//Getting file name with filled Institute Details
-  
-$odf = new odf("odt/base/$base.odt"); 		//Initializing the object with above file name
+//$base = $_POST["id"]		//Getting file name with filled Institute Details
+
+$odf = new odf("odt/base/".$_POST['id'].".odt"); 		//Initializing the object with above file name
  
 
 $file = $_FILES["photo"]["name"];
@@ -120,30 +120,9 @@ $odf -> saveToDisk($source_file);
 $output_file = "pdf/$id.pdf";
 $command = '/usr/bin/unoconv -o '.$output_file.' -f pdf '.$source_file;
 $result = shell_exec($command);
-echo $result;
 
-echo   '<html>
-	<head>
-	<link href="style/bootstrap.min.css" rel="stylesheet" media="screen">	
-	<link href="style/style.css" rel="stylesheet" media="screen">	
-	</head>
-	<body>
-	<center>
-	<h1>Your Certificate has been Generated!</h1>
-	<form action="odt/cert/'.$id.'.odt">
-	<input class="btn btn-primary" type="submit" value="Download ODT">
-	</form>
 
-	<form action="pdf/'.$id.'.pdf">
-	<input class="btn btn-primary" type="submit" value="View/Download PDF">
-	</form>
+echo '{"odt":"odt/cert/'.$id.'.odt", "pdf":"pdf/'.$id.'.pdf"}'
 
-	<form action="index.html">
-	<input class="btn btn-primary" type="submit" value="Goto First Page">
-	</form>
-	</center>
-	</body>
-	</html>';
 
-exit;
 ?>

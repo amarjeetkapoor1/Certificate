@@ -1,19 +1,24 @@
 <?php
-session_start();
+header('Access-Control-Allow-Origin: *');
 require_once('library/odf.php');
-require_once('decide.php');
 
-//Using Session variables to fetch form data
-	$name = $_SESSION['sal'];
-	$fname = $_SESSION['fname'];
-	$mname = $_SESSION['mname'];
-	$lname = $_SESSION['lname'];
-	$ins = $_SESSION['ins'];
-	$city = $_SESSION['city'];
-	$state = $_SESSION['state'];
-	$photo = $_SESSION['photo'];
-	$id = $_SESSION['id'];
-  
+$content = trim(file_get_contents("php://input")); 
+$obj = json_decode($content, true);
+
+$base = $obj['id']; 				//Getting file name with filled Institute Details
+$odf = new odf("odt/base/$base.odt");   		//Initializing the object with above file name
+$id = uniqid();
+$id = $id;				//To be used with filenames to differentiate simultaneous files being processed
+// Assigning Form data to sesssion variables to be used in next step.
+
+$sal = $obj['NameInitial'] ;
+$fname = $obj['FirstName'] ;
+$mname = $obj['MiddleName'] ;
+$lname = $obj['LastName'] ;
+$ins = $obj['Institution'];
+$city = $obj['City'];
+$state = $obj['State'] ;
+
 
 $article = $odf->setSegment('articles');	//Defining Segment articles( used in .odt file)
 	
@@ -50,32 +55,7 @@ $get_current_dir= getcwd();
 $command = 'unoconv -o ' .$get_current_dir.'/pdf/'.$id.'.pdf -f pdf ' .$source_file;
 #$command = '/usr/bin/unoconv -o '.$output_file.' -f pdf '.$source_file;
 $result = shell_exec($command);
-echo $result;
+echo '{"odt":"odt/cert/'.$id.'.odt", "pdf":"pdf/'.$id.'.pdf"}'
 
-echo   '<html>
-	<head>
-	<link href="style/bootstrap.min.css" rel="stylesheet" media="screen">	
-	<link href="style/style.css" rel="stylesheet" media="screen">
-	</head>
-	<body>
-	<center>	
-	<h1>Your Certificate has been Generated!</h1>
-	<form action="odt/cert/'.$id.'.odt">
-	<input class="btn btn-primary" type="submit" value="Download ODT">
-	</form>
-	<form action="pdf/'.$id.'.pdf">
-	<input class="btn btn-primary" type="submit" value="View/Download PDF">
-	</form>	
-	<form action="option.php?var=manual" method = "GET">
-	<input type=hidden name=var value=manual>
-	<input class="btn btn-primary" type="submit" value="Generate Another Certificate">
-	</form>
-	<form action="index.html">
-	<input class="btn btn-primary" type="submit" value="Goto First Page">
-	</form>
-	</center>
-	</body>
-	</html>';
 
-exit;
 ?>
