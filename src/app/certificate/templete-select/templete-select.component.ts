@@ -17,7 +17,7 @@ export class TempleteSelectComponent implements OnInit {
 
   ngOnInit() {
     this.state=this.certiService.getState()
-    for (let i of this.state.TempleteUrls){
+    for (let i of this.certiService.TempleteUrls){
       this.urls.push({"name":i, "url":"/assets/designs/"+i+".jpg"})
     }
   }

@@ -4,6 +4,7 @@ import { Router } from '@angular/router';
 import { FormControl, FormGroup } from '@angular/forms';
 import { Http } from '@angular/http';
 import { CertificateService } from '../certificate.service';
+import { NgProgress } from 'ngx-progressbar';
 
 @Component({
   selector: 'app-csv-upload',
@@ -15,7 +16,8 @@ export class CsvUploadComponent implements OnInit {
   state:State;
   constructor( private router: Router,
     private http:Http, 
-    private certiService:CertificateService) { 
+    private certiService:CertificateService,
+    public ngProgress: NgProgress) {
       
     }
 
@@ -42,6 +44,7 @@ export class CsvUploadComponent implements OnInit {
   }
 
   onSubmit(){
+    this.ngProgress.start();
     const _formData = new FormData();
     _formData.append('file', this.csvFile, this.csvFile.name);
     _formData.append('photo', this.zipFile, this.zipFile.name);
@@ -50,7 +53,8 @@ export class CsvUploadComponent implements OnInit {
     _formData
     ).subscribe(res => {
       this.state.output=res.json();
-      this.certiService.updateState(this.state)
+      this.certiService.updateState({...this.state})
+      this.ngProgress.done();
       this.router.navigate(['output'])
     });
   }

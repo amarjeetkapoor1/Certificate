@@ -28,8 +28,9 @@ export class ManualFormComponent implements OnInit {
   constructor( private router: Router,
     private http:Http,
     private certiService:CertificateService,
-    public ngProgress: NgProgress) { }
+    public ngProgress: NgProgress) {
 
+    }
 
   ngOnInit() {
     this.state=this.certiService.getState()

@@ -7,6 +7,7 @@ import { Http, RequestOptions, Headers} from '@angular/http'
 import { Validators } from '@angular/forms';
 import { CertificateService } from '../certificate.service';
 import { State } from '../certificate.model';
+import { NgProgress } from 'ngx-progressbar';
 
 @Component({
   selector: 'app-base-form',
@@ -32,8 +33,8 @@ export class BaseFormComponent implements OnInit {
   state:State
   constructor( private router: Router,
     private http:Http, 
-    private certiService:CertificateService) { 
-      
+    private certiService:CertificateService,
+    public ngProgress: NgProgress) {
     }
 
   ngOnInit() {
@@ -52,6 +53,7 @@ export class BaseFormComponent implements OnInit {
   }
 
   onSubmit(){
+    this.ngProgress.start();
     this.state.BaseFields={
       ...this.myForm.get("main").value
     }
@@ -65,7 +67,8 @@ export class BaseFormComponent implements OnInit {
     JSON.stringify(sendObj)).subscribe(res => {
       this.state.nextMethod=this.myForm.value["nextMethod"]
       this.state.token=res.json();
-      this.certiService.updateState(this.state)
+      this.certiService.updateState({...this.state})
+      this.ngProgress.done();
       this.router.navigate([this.myForm.value["nextMethod"]])
     });
 

@@ -1,5 +1,4 @@
 export interface State{
-    TempleteUrls: string [];
     SelectedTemplete:string;
     BaseFields: {
     };
@@ -10,8 +9,8 @@ export interface State{
         "pdf":string
     };
     nextFields:{
-
     };
 }
+
 
 

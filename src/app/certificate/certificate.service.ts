@@ -3,10 +3,6 @@ import {State} from './certificate.model'
 export class CertificateService{
 
     state:State={
-        TempleteUrls: ["design1",
-        "design2",
-        "design3"
-        ],
         SelectedTemplete:"",
         BaseFields: {
         },
@@ -19,6 +15,11 @@ export class CertificateService{
             "pdf":""
         }
     }
+
+    TempleteUrls= ["design1",
+    "design2",
+    "design3"
+    ]
 
     Url="http://localhost/Certificate/";
     
