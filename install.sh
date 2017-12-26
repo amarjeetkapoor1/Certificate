@@ -6,11 +6,14 @@
 
 # Installing packages. May also specify versions of php packages
 # e.g. php7.1 php7.1-gd php7.1-xml
-sudo apt-get install apache2 php php-gd php-xml unoconv python3-uno 
+sudo apt-get install apache2 php php-gd php-xml unoconv python3-uno npm
 
 # Copy the project/cloned repository to /var/www/html/
 # Assuming that to be the document root for the Apache web server.
-sudo cp -R ../Certificate/ /var/www/html
+npm install
+npm run-script ng build --prod --aot
+sudo cp -R Certificate/ /var/www/html
+sudo cp -R dist/* /var/www/html
 
 # Changing ownership. The $USER must not be root.
 sudo chown -R $USER:www-data /var/www/html/Certificate

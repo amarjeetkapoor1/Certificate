@@ -13,21 +13,25 @@ Requirements(automatically installed during setup)
 2. php interpreter
 3. unoconv
 4. python3-uno
-	
+
 Setup
 -----
-	cd ../path/to/certificate/
-	./install.sh
+
+* cd ../path/to/Certificate/src/app/certificate/
+* Edit Url in certificate.service.ts to url that point to your /var/www/html/ appended by Certificate (API that will create Certificate).
+    * e.g. Url="http://yoururl.domain/Certificate/"
+* cd ../path/to/Certificate/
+* ./install.sh
 
 P.S. Don't run it with sudo.
-	
+
 Congratulations! You have successfully set it up.
 
-Go to http://localhost/Certificate/CGS/
+Go to http://yoururl.domin
 
 OR
 
-http://localhost/~username/Certificate/CGS/(if Usermode is enabled in apache configuration)
+
 
 USER MANUAL
 -----------
